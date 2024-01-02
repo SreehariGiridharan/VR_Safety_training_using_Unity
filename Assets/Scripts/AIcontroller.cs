@@ -7,15 +7,17 @@ using UnityEngine.Events;
 public class AIcontroller : MonoBehaviour
 {
     public GameObject Destination,Destination2;
-    public UnityEvent trigger;
+  
+    public UnityEvent trigger1;
     public NavMeshAgent otherAgent;
     public Animator myAnimator,myAnimator2;
     public bool AgentStop=true;
     // private Animation myAnimator2;
     // public GameObject bubblechat;
-    public float destinationReachedThreshold = 5f;
+    public float destinationReachedThreshold = 5f, destination2ReachedThreshold = 0.1f;
     private bool enter=false,secondenter=false;
     public float AnimationOFF = 5f;
+    public Collider Mycollider;
     // Start is called before the first frame update
     void Start()
     { 
@@ -33,12 +35,12 @@ public class AIcontroller : MonoBehaviour
      void Update()
     {
         // Check if the NavMeshAgent has reached the destination
+         if(enter)
+            {
         if (otherAgent.remainingDistance <= destinationReachedThreshold && !otherAgent.pathPending)
         {
              
-            if(enter)
-            {
-            
+           
             // Trigger your event or call a method when the destination is reached
             
             Debug.Log(destinationReachedThreshold);
@@ -48,13 +50,23 @@ public class AIcontroller : MonoBehaviour
             // otherAgent.SetDestination(Destination.transform.position);
             
             DestinationReachedEvent();
+
+        }
             }
-
-
         if(secondenter)
+            {
+         if (otherAgent.remainingDistance <= destination2ReachedThreshold && !otherAgent.pathPending)
         {
+
+        
             myAnimator.SetTrigger("turn2");
-            myAnimator.SetTrigger("dance2");
+            // StartCoroutine(GiveMeSomeotherSeconds());
+            // myAnimator.SetTrigger("dance2");
+            
+            // myAnimator2.SetTrigger("permit");
+            otherAgent.isStopped = AgentStop; 
+           
+secondenter=false;
 
         }
         }
@@ -72,12 +84,13 @@ public class AIcontroller : MonoBehaviour
         myAnimator2.SetTrigger("permit");
         // bubblechat.SetActive(true);
         // myAnimator2.Play("Apearing");
-        trigger.Invoke();
+        trigger1.Invoke();
+        enter=false;
          StartCoroutine(GiveMeSomeSeconds());
 
         
         // otherAgent.SetDestination(Destination.transform.position);
-        enter=false;   
+           
        
         }
     }
@@ -86,6 +99,8 @@ public class AIcontroller : MonoBehaviour
      {
         yield return new WaitForSeconds(AnimationOFF);
         myAnimator2.SetTrigger("back");
+        
+    
         
         myAnimator.SetTrigger("turn90");
         yield return new WaitForSeconds(1f);
@@ -97,6 +112,12 @@ public class AIcontroller : MonoBehaviour
         secondenter=true;
 
      }
+    //   private IEnumerator GiveMeSomeotherSeconds()
+    //  {
+    //     yield return new WaitForSeconds(1f);
+       
+    //  }
+
 
 
     private void OnTriggerEnter(Collider other)
@@ -109,6 +130,14 @@ public class AIcontroller : MonoBehaviour
         myAnimator.SetTrigger("interact");
         
      }
+    }
+     private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player")) // Check if the collider exited by a specific object (e.g., tagged as "Player")
+        {
+            Mycollider.enabled = false; // Disable the collider
+        }
     }   
+    
    
 }

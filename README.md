@@ -33,4 +33,4 @@ A basic safety training program for a metal cutting machine in a VR Environment.
 
 ![](/Terrain.png)
 ![](NPC_with_machine.png)
-![](/NPC_message_box.png)
+![](/Chatubble.png)
